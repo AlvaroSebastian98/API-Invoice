@@ -20,6 +20,7 @@ namespace APIInvoice.Controllers
             //Mapper
             //Transforma un objeto de un tipo (Product) a otro tipo (ProductResponse)
             var response = (from c in service.Get()
+                           where c.Enable == true
                            select
                            new Product_Response_v1
                            {
@@ -31,12 +32,21 @@ namespace APIInvoice.Controllers
             return response;
         }
 
-        public Product Get(int id)
+        public Product_Response_v1 Get(int id)
         {
-            return service.GetById(id);
+            Product product = service.GetById(id);
+
+            Product_Response_v1 productResponse = new Product_Response_v1
+            {
+                ProductID = product.ProductID,
+                ProductName = product.ProductName,
+                Prize = product.Prize
+            };
+
+            return productResponse;
         }
 
-        public void Post([FromBody] Product_Request_v1 request)
+        public int Post([FromBody] Product_Request_v1 request)
         {
             //Ingreso un objeto de tipo Product_Request_v1
             //TRANSFORMAR
@@ -44,9 +54,13 @@ namespace APIInvoice.Controllers
             Product product = new Product();            
             product.ProductName = request.ProductName;
             product.Prize = request.Prize;
-            product.Stock = request.Stock;            
-            service.Insert(product); 
+            product.Stock = request.Stock;
+
+            int id = service.Insert(product);
+
+            return id;
         }
+
         public void UpdatePrize([FromBody] Product_Request_v2 request)
         {
             
@@ -55,6 +69,7 @@ namespace APIInvoice.Controllers
             product.Prize = request.Prize;                        
             service.Update(product,product.ProductID);
         }
+
         public void UpdateName([FromBody] Product_Request_v3 request)
         {
 
@@ -62,6 +77,12 @@ namespace APIInvoice.Controllers
             product.ProductID = request.ProductID;
             product.ProductName = request.ProductName;
             service.Update(product, product.ProductID);
+        }
+
+        public bool Delete(int id)
+        {
+            bool response = service.Delete(id);
+            return response;
         }
     }
 }

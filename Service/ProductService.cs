@@ -52,8 +52,9 @@ namespace Service
             return Product;
         }
 
-        public void Insert(Product Product)
+        public int Insert(Product Product)
         {
+            int id;
             using (var context = new InvoiceContext())
             {
                 Product.Enable = true;
@@ -62,7 +63,10 @@ namespace Service
                 Product.CreatedBy = "Admin";
                 context.Products.Add(Product);
                 context.SaveChanges();
+
+                id = Product.ProductID;
             }
+            return id;
         }
 
         public void Update(Product Product, int ID)
@@ -74,9 +78,29 @@ namespace Service
                 ProductNew.Prize = Product.Prize==0 ? ProductNew.Prize : Product.Prize;                
                 context.SaveChanges();
             }
+        }        
+
+        public bool Delete(int ID)
+        {
+            bool response;
+            try
+            {
+                using (var context = new InvoiceContext())
+                {
+                    var Product = context.Products.Find(ID);
+                    Product.Enable = false;
+                    context.SaveChanges();
+                }
+                response = true;
+            }            
+            catch (Exception)
+            {
+                response = false;
+            }
+            return response;
         }
 
-        public void Delete(int ID)
+        public void Remove(int ID)
         {
             using (var context = new InvoiceContext())
             {
@@ -85,7 +109,6 @@ namespace Service
                 context.SaveChanges();
             }
         }
-
 
     }
 }

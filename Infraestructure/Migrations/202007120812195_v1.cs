@@ -14,17 +14,17 @@
                         DetailID = c.Int(nullable: false, identity: true),
                         Quantity = c.Int(nullable: false),
                         Prize = c.Int(nullable: false),
+                        ClientID = c.Int(nullable: false),
                         ProductID = c.Int(nullable: false),
                         InvoiceID = c.Int(nullable: false),
-                        Client_UserID = c.Int(),
                     })
                 .PrimaryKey(t => t.DetailID)
-                .ForeignKey("dbo.Users", t => t.Client_UserID)
+                .ForeignKey("dbo.Users", t => t.ClientID, cascadeDelete: true)
                 .ForeignKey("dbo.Invoices", t => t.InvoiceID, cascadeDelete: true)
                 .ForeignKey("dbo.Products", t => t.ProductID, cascadeDelete: true)
+                .Index(t => t.ClientID)
                 .Index(t => t.ProductID)
-                .Index(t => t.InvoiceID)
-                .Index(t => t.Client_UserID);
+                .Index(t => t.InvoiceID);
             
             CreateTable(
                 "dbo.Users",
@@ -80,12 +80,12 @@
         {
             DropForeignKey("dbo.Details", "ProductID", "dbo.Products");
             DropForeignKey("dbo.Details", "InvoiceID", "dbo.Invoices");
-            DropForeignKey("dbo.Details", "Client_UserID", "dbo.Users");
+            DropForeignKey("dbo.Details", "ClientID", "dbo.Users");
             DropForeignKey("dbo.Users", "UserTypeID", "dbo.UserTypes");
             DropIndex("dbo.Users", new[] { "UserTypeID" });
-            DropIndex("dbo.Details", new[] { "Client_UserID" });
             DropIndex("dbo.Details", new[] { "InvoiceID" });
             DropIndex("dbo.Details", new[] { "ProductID" });
+            DropIndex("dbo.Details", new[] { "ClientID" });
             DropTable("dbo.Products");
             DropTable("dbo.Invoices");
             DropTable("dbo.UserTypes");

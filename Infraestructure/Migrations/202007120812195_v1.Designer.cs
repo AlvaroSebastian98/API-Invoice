@@ -13,7 +13,7 @@ namespace Infraestructure.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202006300022549_v1"; }
+            get { return "202007120812195_v1"; }
         }
         
         string IMigrationMetadata.Source
