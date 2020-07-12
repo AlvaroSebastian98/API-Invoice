@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,6 @@ namespace Domain
     public class Detail
     {
         public int DetailID { get; set; }
-
         public int Quantity { get; set; }
         public int Prize { get; set; }
         
@@ -17,6 +17,9 @@ namespace Domain
         //public User Seller { get; set; }
         //public int SellerID { get; set; }
         public User Client { get; set; }
+        [ForeignKey("Client")]
+        public int ClientID { get; set; }
+
         public Product Product { get; set; }
         public int ProductID { get; set; }
 
