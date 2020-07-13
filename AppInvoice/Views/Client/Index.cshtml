@@ -56,6 +56,8 @@
                     <div class="form-group">
                         <label for="Username">Username</label>
                         <input type="text" class="form-control" name="Username" id="Username" placeholder="">
+                        <label for="Username">Tipo de usuario </label>
+                        <input type="text" class="form-control" name="UserTypeID" id="UserTypeID" placeholder="1 o 2">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -79,7 +81,9 @@
                     $("#exampleModalLabel").text("Actualizar Cliente");
                     $("#ClientID").val(data.ClientID);
                     $("#Username").val(data.Username);
+                    $("#UserTypeID").val(data.UserTypeID);
                     $("#exampleModal").modal('toggle');
+
                 });
             }
 
@@ -87,6 +91,8 @@
                 $("#exampleModalLabel").text("Registar Cliente");
                 $("#ClientID").val("");
                 $("#Username").val("");
+                $("#UserTypeID").val("");
+
             }
 
             var obtener_data_eliminar = function (tbody, table) {
@@ -184,6 +190,7 @@
                             columns: [
                                 { "data": "ClientID" },
                                 { "data": "Username" },
+                      
                                 {
                                     "defaultContent": "<button type='button' class='btn btn-success btn-circle editar mr-2'><i class='fas fa-pencil-alt'></i></button>" +
                                         "<button class='btn btn-danger btn-circle eliminar mr-2'><i class='fas fa-trash'></i></button>"
