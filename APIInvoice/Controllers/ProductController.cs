@@ -61,6 +61,27 @@ namespace APIInvoice.Controllers
             return id;
         }
 
+        public bool Update([FromBody] Product_Request_v4 request)
+        {
+            bool status;
+            try
+            {
+                Product product = new Product();
+                product.ProductID = request.ProductID;
+                product.ProductName = request.ProductName;
+                product.Prize = request.Prize;
+                product.Stock = request.Stock;
+
+                service.Update(product, product.ProductID);
+                status = true;
+            }
+            catch (Exception)
+            {
+                status = false;
+            }
+            return status;
+        }
+
         public void UpdatePrize([FromBody] Product_Request_v2 request)
         {
             
