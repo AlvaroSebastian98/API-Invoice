@@ -7,6 +7,7 @@ namespace AppInvoice.Models
 {
     public class Product
     {
+        //yen
         public int ProductID { get; set; }
         public string ProductName { get; set; }
         public double Prize { get; set; }
