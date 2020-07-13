@@ -7,10 +7,6 @@
 
 </div>
 
-@*@section styles {
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
-}*@
-
 <!-- DataTales-->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -24,7 +20,7 @@
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
+                <thead class="thead-dark">
                     <tr>
                         <th width="10%">Id</th>
                         <th width="60%">Nombre</th>
@@ -67,8 +63,6 @@
     </div>
 </div>
 @section scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/js/all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script type="text/javascript">
         $(document).ready(function () {
 
