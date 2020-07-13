@@ -52,7 +52,7 @@ namespace Service
             return Product;
         }
 
-        public int Insert(Product Product, int userID)
+        public int Insert(Product Product)
         {
             int id;
             using (var context = new InvoiceContext())
