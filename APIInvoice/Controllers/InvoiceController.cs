@@ -17,6 +17,7 @@ namespace APIInvoice.Controllers
         private InvoiceService invoiceService = new InvoiceService();
         private DetailService detailService = new DetailService();
         private ProductService productService = new ProductService();
+        private ClientService clientService = new ClientService();
 
         public List<Invoice_Response_v1> GetAllInvoices()
         {
@@ -29,7 +30,11 @@ namespace APIInvoice.Controllers
                                 InvoiceNumber = c.InvoiceNumber,
                                 Date = c.Date,
                                 DueDate = c.DueDate,
-                                ClientID = c.ClientID,
+                                Client = new Client_Response_v1
+                                {
+                                    ClientID = c.ClientID,
+                                    Username = clientService.GetById(c.ClientID).Username
+                                },
                                 Details = (from d in detailService.Get()
                                            where d.InvoiceID == c.InvoiceID
                                            select
@@ -60,7 +65,11 @@ namespace APIInvoice.Controllers
                 InvoiceNumber = invoice.InvoiceNumber,
                 Date = invoice.Date,
                 DueDate = invoice.DueDate,
-                ClientID = invoice.ClientID,
+                Client = new Client_Response_v1
+                {
+                    ClientID = invoice.ClientID,
+                    Username = clientService.GetById(invoice.ClientID).Username
+                },
                 Details = (from d in detailService.Get()
                            where d.InvoiceID == invoice.InvoiceID
                            select
