@@ -1,0 +1,316 @@
+﻿@model IEnumerable<AppInvoice.Models.Invoice>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InvoiceNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details)
+            </th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvoiceNumber)
+            </td>
+            <td>
+                @foreach (var detail in item.Details)
+                {
+                    <br />
+                    <li>
+                        @Html.DisplayFor(modelitem => detail.Product.ProductName)
+                    </li>
+                    <br />
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.InvoiceID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.InvoiceID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.InvoiceID })
+            </td>
+        </tr>
+    }
+
+    </table>*@
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <div class="row">
+            <h6 class="col-md-10 m-0 font-weight-bold text-primary">Lista de Facturas</h6>
+            <button type="button" class="col-md-2 btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Nueva Factura
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th width="8%">InvoiceID</th>
+                        <th width="8%">Date</th>
+                        <th width="20%">InvoiceNumber</th>
+                        <th width="20%">Detalle</th>
+                        <th width="5%">Quantity</th>
+                        <th width="5%">Prize</th>
+                        <th width="5%">Product</th>
+                        <th width="5%">Pagado</th>
+                        <th width="20%">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registrar Factura</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form1">
+                <div class="modal-body">
+                    <input type="hidden" value="" name="salesInvoceID" id="salesInvoceID" />
+                    <div class="form-group">
+                        <label for="cliente">Cliente</label>
+                        <select class="form-control" id="cliente" name="cliente">
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="product">Productos</label>
+                                <select class="form-control" id="product" name="product">
+                                    <option></option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="Quantity">Cantidad</label>
+                                <input type="text" class="form-control" name="Quantity" id="Quantity" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button id="btnAgregar" type="button" class="btn btn-primary btn-block">Agregar producto</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente">Lista de productos</label>
+                        <div class="col-md-12">
+                            <table id="tblProducts" class="table table-bordered">
+                                <thead>
+                                    <th>ProductId</th>
+                                    <th>ProductName</th>
+                                    <th width="10%">Cantidad</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-8 text-right">
+                                <label for="total">Total</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" readonly name="total" id="total" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var listItems = [];
+            var products = [];
+            var sub_total = 0;
+            var total = 0;
+            $("#btnAgregar").on("click", function () {
+
+                sub_total = 0;
+
+                var found = products.find(element => element.ProductID == $("#product").val());
+
+                var item = { "productID": $("#product").val(), "Quantity": $("#Quantity").val(), "price": found.Price };
+
+                $('#tblProducts').append('<tr><td>' + found.Name + '</td><td> $' + found.Price + '</td><td>' + item.Quantity + '</td></tr>');
+
+                listItems.push(item);
+
+                listItems.forEach(element => sub_total = sub_total + (element.price * element.Quantity));
+
+                $("#subTotal").val(sub_total);
+
+                total = sub_total + (sub_total * ($("#discount").val() / 100));
+                $("#total").val(total);
+
+            });
+
+            //lanzar = function () {
+            //    limpiarForm();
+            //    $("#exampleModal").modal('toggle');
+            //}
+
+            var limpiarForm = function () {
+                $("#exampleModalLabel").text("Registar Producto");
+                $("#productID").val("");
+                $("#name").val("");
+                $("#stock").val("");
+                $("#price").val("");
+                $("#remarks").val("");
+            }
+
+            var llenarClientes = function () {
+                $.ajax({
+                    type: "GET",
+                    url: 'https://localhost:44330/api/Client/Get',
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data)
+                        $.each(data, function (key, registro) {
+                            $("#cliente").append('<option value=' + registro.ClientID + '>' + registro.Username + '</option>');
+                        });
+                        $('#cliente')
+                    },
+                    error: function (data) {
+                        alert('error');
+                    }
+                });
+            }
+
+            var llenarProductos = function () {
+                $.ajax({
+                    type: "GET",
+                    url: 'https://localhost:44330/api/Product/Get',
+                    dataType: "json",
+                    success: function (data) {
+                        products = data;
+                        $.each(data, function (key, registro) {
+                            $("#product").append('<option value=' + registro.ProductID + '>' + registro.ProductName + ' $' + registro.Prize + '</option>');
+                            console.log(registro)
+                        });
+                        $('#product')
+                    },
+                    error: function (data) {
+                        alert('error');
+                    }
+                });
+            }
+
+            var cargarLista = function () {
+                $.ajax({
+                    url: "https://localhost:44330/api/Invoice/GetAllInvoices",
+                    success: function (data) {
+                        //console.log(data);
+                        //for (var i = 0; i < data.length; i++) {
+                        //    data[i].CreateAt1 = moment(data[i].CreateAt).format("MM/DD/YYYY");
+                        //}
+                        var table = $('#dataTable').DataTable({
+                            destroy: true,
+                            "language": {
+                                "decimal": ",",
+                                "thousands": ".",
+                                "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "infoPostFix": "",
+                                "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "loadingRecords": "Cargando...",
+                                "lengthMenu": "Mostrar _MENU_ registros",
+                                "paginate": {
+                                    "first": "Primero",
+                                    "last": "Último",
+                                    "next": "Siguiente",
+                                    "previous": "Anterior"
+                                },
+                                "processing": "Procesando...",
+                                "search": "Buscar:",
+                                "searchPlaceholder": "Término de búsqueda",
+                                "zeroRecords": "No se encontraron resultados",
+                                "emptyTable": "Ningún dato disponible en esta tabla",
+                                "aria": {
+                                    "sortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sortDescending": ": Activar para ordenar la columna de manera descendente"
+                                },
+                                "buttons": {
+                                    "create": "Nuevo",
+                                    "edit": "Cambiar",
+                                    "remove": "Borrar",
+                                    "copy": "Copiar",
+                                    "csv": "fichero CSV",
+                                    "excel": "tabla Excel",
+                                    "pdf": "documento PDF",
+                                    "print": "Imprimir",
+                                    "colvis": "Visibilidad columnas",
+                                    "collection": "Colección",
+                                    "upload": "Seleccione fichero...."
+                                },
+                                "select": {
+                                    "rows": {
+                                        _: '%d filas seleccionadas',
+                                        0: 'clic fila para seleccionar',
+                                        1: 'una fila seleccionada'
+                                    }
+                                }
+                            },
+                            data: data,
+                            columns: [
+                                { "data": "InvoiceID" },
+                                { "data": "Date" },
+                                { "data": "DueDate" },
+                                { "data": "InvoiceNumber" },
+                                { "data": "ClientID" },
+                                { "data": "Details" },
+                                {
+                                    "defaultContent": "<button type='button' class='btn btn-success btn-circle editar mr-2'><i class='fas fa-pencil-alt'></i></button>" +
+                                        "<button class='btn btn-danger btn-circle eliminar mr-2'><i class='fas fa-trash'></i></button>"
+                                }
+                            ],
+                        });
+                        //obtener_data_editar("#dataTable tbody", table);
+                        //obtener_data_eliminar("#dataTable tbody", table);
+                    }
+                });
+            }
+
+            llenarClientes();
+            llenarProductos();
+            cargarLista();
+        })
+    </script>
+}
