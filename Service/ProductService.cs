@@ -58,8 +58,8 @@ namespace Service
             using (var context = new InvoiceContext())
             {
                 Product.Enable = true;
-                Product.CreatedOn = DateTime.Today;
-                Product.ModifiedOn = DateTime.Today;
+                Product.CreatedOn = DateTime.Now;
+                Product.ModifiedOn = DateTime.Now;
                 Product.CreatedBy = "Admin";
                 context.Products.Add(Product);
                 context.SaveChanges();
@@ -75,7 +75,9 @@ namespace Service
             {
                 var ProductNew = context.Products.Find(ID);
                 ProductNew.ProductName = Product.ProductName == null ? ProductNew.ProductName : Product.ProductName;
-                ProductNew.Prize = Product.Prize==0 ? ProductNew.Prize : Product.Prize;                
+                ProductNew.Prize = Product.Prize==0 ? ProductNew.Prize : Product.Prize;
+                ProductNew.Stock = Product.Stock == 0 ? ProductNew.Stock : Product.Stock;
+                ProductNew.ModifiedOn = DateTime.Now;
                 context.SaveChanges();
             }
         }        

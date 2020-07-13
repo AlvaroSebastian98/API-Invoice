@@ -185,8 +185,10 @@
     <Compile Include="Models\Request\Detail_Request_v2.cs" />
     <Compile Include="Models\Request\Detail_Request_v3.cs" />
     <Compile Include="Models\Request\Invoice_Request_v1.cs" />
+    <Compile Include="Models\Request\Invoice_Request_v2.cs" />
     <Compile Include="Models\Request\Product_Request_v1.cs" />
     <Compile Include="Models\Request\Product_Request_v2.cs" />
+    <Compile Include="Models\Request\Product_Request_v4.cs" />
     <Compile Include="Models\Response\Client_Response_v1.cs" />
     <Compile Include="Models\Response\Detail_Response_v1.cs" />
     <Compile Include="Models\Response\Invoice_Response_v1.cs" />
