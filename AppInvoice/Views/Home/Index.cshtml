@@ -2,9 +2,9 @@
     ViewBag.Title = "Home Page";
 }
 
-@section scripts {
+@*@section styles {
     @Styles.Render("~/Content/Site.css")
-}
+}*@
 
 <div class="row">
 
@@ -17,12 +17,45 @@
         <div id="formContent">
 
             <!-- Login Form -->
-            <form>
+            <form id="form1">
                 <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
-                <input type="password" id="password" class="fadeIn third" name="login" placeholder="password">
+                <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
                 <input type="submit" class="fadeIn fourth" value="Log In">
             </form>
 
         </div>
     </div>
 </div>
+
+
+@section scripts {
+    <script>
+
+        console.log('Datos')
+
+        $("#form1").on("submit", function (event) {
+            event.preventDefault();
+            $.ajax({
+                url: 'https://localhost:44330/api/Login/Login',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (result) {
+                    //limpiarForm();
+                    console.log(result.ClientID == 0)
+                    if (result.ClientID == 0) {
+                        alert("usuario o contraseña incorrectos");
+                    } else {
+                        setTimeout(function () {
+                            window.location.href = 'https://localhost:44307/Invoice';
+                        }, 1000)
+                    }
+                },
+                error: function (err) {
+                    alert("usuario o contraseña incorrectos");
+                }
+                
+            });
+        });
+
+    </script>
+} 

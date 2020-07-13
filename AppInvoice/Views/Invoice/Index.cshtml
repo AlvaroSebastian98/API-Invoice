@@ -70,8 +70,8 @@
                         <th width="8%">InvoiceID</th>
                         <th width="8%">Date</th>
                         <th width="20%">InvoiceNumber</th>
+                        <th width="5%">Client</th>
                         <th width="20%">DueDate</th>
-                        <th width="5%">ClientID</th>
                         <th width="5%">Details</th>
                         <th width="30%">Acciones</th>
                     </tr>
@@ -293,12 +293,11 @@
                                 { "data": "InvoiceID" },
                                 { "data": "Date" },
                                 { "data": "InvoiceNumber" },
+                                { "data": "Client.Username" },
                                 { "data": "DueDate" },
-                                { "data": "ClientID" },
                                 { "data": "Details[].Product.ProductName" },
                                 {
-                                    "defaultContent": "<button type='button' class='btn btn-warning mr-2'><i class='fas fa-eye'></i></button>"
-                                        + "<button type='button' class='btn btn-success btn-circle editar mr-2'><i class='fas fa-pencil-alt'></i></button>" +
+                                    "defaultContent": "<button type='button' class='btn btn-success btn-circle editar mr-2'><i class='fas fa-pencil-alt'></i></button>" +
                                         "<button class='btn btn-danger btn-circle eliminar mr-2'><i class='fas fa-trash'></i></button>"
                                 }
                             ],
