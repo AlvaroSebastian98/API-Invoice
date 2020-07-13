@@ -1,0 +1,239 @@
+﻿@model IEnumerable<AppInvoice.Models.Invoice>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InvoiceNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Details)
+            </th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvoiceNumber)
+            </td>
+            <td>
+                @foreach (var detail in item.Details)
+                {
+                    <br />
+                    <li>
+                        @Html.DisplayFor(modelitem => detail.Product.ProductName)
+                    </li>
+                    <br />
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.InvoiceID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.InvoiceID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.InvoiceID })
+            </td>
+        </tr>
+    }
+
+    </table>*@
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <div class="row">
+            <h6 class="col-md-10 m-0 font-weight-bold text-primary">Lista de Facturas</h6>
+            <button type="button" class="col-md-2 btn btn-primary" onclick="lanzar()">
+                Nueva Factura
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th width="8%">Nro Factura</th>
+                        <th width="8%">Fecha de Venta</th>
+                        <th width="20%">Vendedor</th>
+                        <th width="20%">Cliente</th>
+                        <th width="5%">Subtotal</th>
+                        <th width="5%">Igv</th>
+                        <th width="5%">Total</th>
+                        <th width="5%">Pagado</th>
+                        <th width="20%">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Registrar Cliente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form1">
+                <div class="modal-body">
+                    <input type="hidden" value="" name="salesInvoceID" id="salesInvoceID" />
+                    <div class="form-group">
+                        <label for="customer">Cliente</label>
+                        <select class="form-control" id="customer" name="customer">
+                            <option></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label for="product">Productos</label>
+                                <select class="form-control" id="product" name="product">
+                                    <option></option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="quantity">Cantidad</label>
+                                <input type="text" class="form-control" name="quantity" id="quantity" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button id="btnAgregar" type="button" class="btn btn-primary btn-block">Agregar producto</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer">Lista de productos</label>
+                        <div class="col-md-12">
+                            <table id="tblProducts" class="table table-bordered">
+                                <thead>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th width="10%">Cantidad</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-8 text-right">
+                                <label for="subTotal">SubTotal</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" readonly name="subTotal" id="subTotal" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-8 text-right">
+                                <label for="discount">IGV %</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" readonly name="discount" value="18" id="discount" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-8 text-right">
+                                <label for="total">Total</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" readonly name="total" id="total" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var listItems = [];
+            var products = [];
+            var sub_total = 0;
+            var total = 0;
+            $("#btnAgregar").on("click", function () {
+
+                sub_total = 0;
+
+                var found = products.find(element => element.ProductID == $("#product").val());
+
+                var item = { "productID": $("#product").val(), "quantity": $("#quantity").val(), "price": found.Price };
+
+                $('#tblProducts').append('<tr><td>' + found.Name + '</td><td> $' + found.Price + '</td><td>' + item.quantity + '</td></tr>');
+
+                listItems.push(item);
+
+                listItems.forEach(element => sub_total = sub_total + (element.price * element.quantity));
+
+                $("#subTotal").val(sub_total);
+
+                total = sub_total + (sub_total * ($("#discount").val() / 100));
+                $("#total").val(total);
+
+            });
+
+            lanzar = function () {
+                limpiarForm();
+                $("#exampleModal").modal('toggle');
+            }
+
+            var limpiarForm = function () {
+                $("#exampleModalLabel").text("Registar Producto");
+                $("#productID").val("");
+                $("#name").val("");
+                $("#stock").val("");
+                $("#price").val("");
+                $("#remarks").val("");
+            }
+
+            var llenarProductos = function () {
+                $.ajax({
+                    type: "GET",
+                    url: 'https://localhost:44330/api/Product/Get',
+                    dataType: "json",
+                    success: function (data) {
+                        products = data;
+                        $.each(data, function (key, registro) {
+                            $("#product").append('<option value=' + registro.ProductID + '>' + registro.ProductName + ' $' + registro.Prize + '</option>');
+                        });
+                        $('#product').combobox()
+                    },
+                    error: function (data) {
+                        alert('error');
+                    }
+                });
+            }
+            llenarProductos();
+        })
+    </script>
+}
