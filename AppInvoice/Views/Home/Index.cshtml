@@ -18,7 +18,7 @@
 
             <!-- Login Form -->
             <form id="form1">
-                <input type="text" id="login" class="fadeIn second" name="login" placeholder="login">
+                <input type="text" id="Username" class="fadeIn second" name="Username" placeholder="login">
                 <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
                 <input type="submit" class="fadeIn fourth" value="Log In">
             </form>
@@ -41,13 +41,21 @@
                 data: $(this).serialize(),
                 success: function (result) {
                     //limpiarForm();
+                    console.log(result.ClientID)
+                    console.log(result.Username)
                     console.log(result.ClientID == 0)
-                    if (result.ClientID == 0) {
-                        alert("usuario o contraseña incorrectos");
-                    } else {
+                    if (result.ClientID != 0) {
                         setTimeout(function () {
                             window.location.href = 'https://localhost:44307/Invoice';
                         }, 1000)
+                        
+                    } else {
+                        //alert("usuario o contraseña incorrectos");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Usuario o contraseña incorrectos',
+                            text: 'Algo salió mal!',
+                        })
                     }
                 },
                 error: function (err) {
