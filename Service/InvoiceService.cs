@@ -66,7 +66,16 @@ namespace Service
             return status;
         }
 
-        // No hay método para actualizar ya que los campos de Invoice son autogenerados
+        public void Update(Invoice Invoice, int ID)
+        {
+            using (var context = new InvoiceContext())
+            {
+                var InvoiceNew = context.Invoices.Find(ID);
+                InvoiceNew.DueDate = Invoice.DueDate == null ? InvoiceNew.DueDate : Invoice.DueDate;
+                InvoiceNew.ClientID = Invoice.ClientID == 0 ? InvoiceNew.ClientID : Invoice.ClientID;
+                context.SaveChanges();
+            }
+        }
 
         public async Task<bool> Delete(int ID)
         {

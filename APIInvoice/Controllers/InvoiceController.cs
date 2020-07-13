@@ -100,7 +100,25 @@ namespace APIInvoice.Controllers
 
         }
 
-        // No hay método para actualizar ya que los campos de Invoice son autogenerados
+        public bool UpdateInvoice([FromBody] Invoice_Request_v2 request)
+        {
+            bool status;
+            try
+            {
+                Invoice invoice = new Invoice();
+                invoice.InvoiceID = request.InvoiceID;
+                invoice.DueDate = request.DueDate;
+                invoice.ClientID = request.ClientID;
+
+                invoiceService.Update(invoice, invoice.InvoiceID);
+                status = true;
+            }
+            catch (Exception)
+            {
+                status = false;
+            }
+            return status;
+        }        
 
         public async Task<bool> DeleteInvoice(int id)
         {
