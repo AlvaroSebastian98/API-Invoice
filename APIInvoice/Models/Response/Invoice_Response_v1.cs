@@ -10,7 +10,9 @@ namespace APIInvoice.Models.Response
     {
         public int InvoiceID { get; set; }
         public DateTime Date { get; set; }
-        public string InvoiceNumber { get; set; }
+        public DateTime DueDate { get; set; }
+        public string InvoiceNumber { get; set; }        
+        public int ClientID { get; set; }
         public List<Detail_Response_v1> Details { get; set; }
     }
 }

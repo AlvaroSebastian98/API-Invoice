@@ -28,7 +28,7 @@ namespace Service
 
             using (var context = new InvoiceContext())
             {
-                Invoice = context.Invoices.Find(ID);
+                Invoice = context.Invoices.Where((invoice) => invoice.InvoiceID == ID && invoice.State == true).First();
             }
 
             return Invoice;
@@ -46,6 +46,7 @@ namespace Service
                 {
                     Invoice.Date = DateTime.Today;
                     Invoice.InvoiceNumber = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+                    Invoice.State = true;
 
                     context.Invoices.Add(Invoice);                    
 
@@ -67,15 +68,41 @@ namespace Service
 
         // No hay método para actualizar ya que los campos de Invoice son autogenerados
 
-        public bool Delete(int ID)
+        public async Task<bool> Delete(int ID)
+        {
+            DetailService detailService = new DetailService();
+            bool status;
+
+            try
+            {
+                // TODO: Eliminar (¿primero?) también los productos de la tabla Detail que estén relacionados
+                // con la factura eliminada
+                List<Detail> Details = detailService.Get().Where((detail) => detail.InvoiceID == ID).ToList();
+
+                await detailService.DeleteWithInvoice(Details);                
+
+                using (var context = new InvoiceContext())
+                {                    
+                    var Invoice = context.Invoices.Find(ID);
+                    Invoice.State = false;
+                    context.SaveChanges();
+                }
+                status = true;
+            }
+            catch (Exception)
+            {
+                status = false;
+            }
+            return status;
+        }
+
+        public bool Remove(int ID)
         {
             bool status;
             try
             {
                 using (var context = new InvoiceContext())
                 {
-                    // TODO: Eliminar (¿primero?) también los productos de la tabla Detail que estén relacionados
-                    // con la factura eliminada
                     var Invoice = context.Invoices.Find(ID);
                     context.Invoices.Remove(Invoice);
                     context.SaveChanges();

@@ -17,6 +17,7 @@ namespace APIInvoice.Controllers
         private DetailService detailService = new DetailService();
         private ProductService productService = new ProductService();
 
+        [HttpGet]
         public Detail_Response_v1 GetDetailById(int id)
         {
             Detail detail = detailService.GetById(id);
@@ -35,11 +36,12 @@ namespace APIInvoice.Controllers
             return detailResponse;
         }
 
+        [HttpGet]
         public async Task<bool> InsertDetail([FromBody] Detail_Request_v2 request)
         {
             Detail detail = new Detail();
             detail.Quantity = request.Quantity;
-            detail.ClientID = request.ClientID;
+            detail.Description = request.Description;
             detail.ProductID = request.ProductID;
             detail.InvoiceID = request.InvoiceID;
 
@@ -48,13 +50,14 @@ namespace APIInvoice.Controllers
 
         }
 
+        [HttpPut]
         public bool UpdateDetail([FromBody] Detail_Request_v3 request)
         {
 
             Detail detail = new Detail();
             detail.DetailID = request.DetailID;
             detail.Quantity = request.Quantity;
-            detail.ClientID = request.ClientID;
+            detail.Description = request.Description;
             detail.ProductID = request.ProductID;
             detail.InvoiceID = request.InvoiceID;
             
@@ -62,9 +65,10 @@ namespace APIInvoice.Controllers
             return status;
         }
 
-        public bool DeleteDetail(int id)
+        [HttpPost]
+        public async Task<bool> DeleteDetail(int id)
         {
-            bool status = detailService.Delete(id);
+            bool status = await detailService.Delete(id);
             return status;
         }
     }

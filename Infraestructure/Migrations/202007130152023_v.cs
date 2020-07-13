@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class v1 : DbMigration
+    public partial class v : DbMigration
     {
         public override void Up()
         {
@@ -12,19 +12,33 @@
                 c => new
                     {
                         DetailID = c.Int(nullable: false, identity: true),
+                        Description = c.String(),
                         Quantity = c.Int(nullable: false),
                         Prize = c.Int(nullable: false),
-                        ClientID = c.Int(nullable: false),
                         ProductID = c.Int(nullable: false),
                         InvoiceID = c.Int(nullable: false),
+                        State = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.DetailID)
-                .ForeignKey("dbo.Users", t => t.ClientID, cascadeDelete: true)
                 .ForeignKey("dbo.Invoices", t => t.InvoiceID, cascadeDelete: true)
                 .ForeignKey("dbo.Products", t => t.ProductID, cascadeDelete: true)
-                .Index(t => t.ClientID)
                 .Index(t => t.ProductID)
                 .Index(t => t.InvoiceID);
+            
+            CreateTable(
+                "dbo.Invoices",
+                c => new
+                    {
+                        InvoiceID = c.Int(nullable: false, identity: true),
+                        InvoiceNumber = c.String(),
+                        Date = c.DateTime(nullable: false),
+                        DueDate = c.DateTime(nullable: false),
+                        ClientID = c.Int(nullable: false),
+                        State = c.Boolean(nullable: false),
+                    })
+                .PrimaryKey(t => t.InvoiceID)
+                .ForeignKey("dbo.Users", t => t.ClientID, cascadeDelete: true)
+                .Index(t => t.ClientID);
             
             CreateTable(
                 "dbo.Users",
@@ -49,16 +63,6 @@
                 .PrimaryKey(t => t.UserTypeID);
             
             CreateTable(
-                "dbo.Invoices",
-                c => new
-                    {
-                        InvoiceID = c.Int(nullable: false, identity: true),
-                        Date = c.DateTime(nullable: false),
-                        InvoiceNumber = c.String(),
-                    })
-                .PrimaryKey(t => t.InvoiceID);
-            
-            CreateTable(
                 "dbo.Products",
                 c => new
                     {
@@ -80,16 +84,16 @@
         {
             DropForeignKey("dbo.Details", "ProductID", "dbo.Products");
             DropForeignKey("dbo.Details", "InvoiceID", "dbo.Invoices");
-            DropForeignKey("dbo.Details", "ClientID", "dbo.Users");
+            DropForeignKey("dbo.Invoices", "ClientID", "dbo.Users");
             DropForeignKey("dbo.Users", "UserTypeID", "dbo.UserTypes");
             DropIndex("dbo.Users", new[] { "UserTypeID" });
+            DropIndex("dbo.Invoices", new[] { "ClientID" });
             DropIndex("dbo.Details", new[] { "InvoiceID" });
             DropIndex("dbo.Details", new[] { "ProductID" });
-            DropIndex("dbo.Details", new[] { "ClientID" });
             DropTable("dbo.Products");
-            DropTable("dbo.Invoices");
             DropTable("dbo.UserTypes");
             DropTable("dbo.Users");
+            DropTable("dbo.Invoices");
             DropTable("dbo.Details");
         }
     }
