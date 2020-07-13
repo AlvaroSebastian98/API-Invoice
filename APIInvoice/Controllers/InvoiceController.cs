@@ -21,22 +21,24 @@ namespace APIInvoice.Controllers
         public List<Invoice_Response_v1> GetAllInvoices()
         {
             var response = (from c in invoiceService.Get()
+                            where c.State == true
                             select
                             new Invoice_Response_v1
                             {
                                 InvoiceID = c.InvoiceID,
                                 InvoiceNumber = c.InvoiceNumber,
                                 Date = c.Date,
+                                DueDate = c.DueDate,
+                                ClientID = c.ClientID,
                                 Details = (from d in detailService.Get()
                                            where d.InvoiceID == c.InvoiceID
-                                           select                                          
+                                           select
                                            new Detail_Response_v1
                                            {
                                                DetailID = d.DetailID,
                                                Quantity = d.Quantity,
+                                               Description = d.Description,
                                                Prize = d.Prize,
-                                               //ProductID = d.ProductID,
-                                               //ProductName = productService.GetById(d.ProductID).ProductName
                                                Product = new Product_Response_v2
                                                {
                                                    ProductID = d.ProductID,
@@ -57,12 +59,16 @@ namespace APIInvoice.Controllers
                 InvoiceID = invoice.InvoiceID,
                 InvoiceNumber = invoice.InvoiceNumber,
                 Date = invoice.Date,
+                DueDate = invoice.DueDate,
+                ClientID = invoice.ClientID,
                 Details = (from d in detailService.Get()
+                           where d.InvoiceID == invoice.InvoiceID
                            select
                            new Detail_Response_v1
                            {
                                DetailID = d.DetailID,
                                Quantity = d.Quantity,
+                               Description = d.Description,
                                Prize = d.Prize,
                                Product = new Product_Response_v2
                                {
@@ -78,12 +84,14 @@ namespace APIInvoice.Controllers
         public async Task<bool> InsertInvoice([FromBody] Invoice_Request_v1 request)
         {
             Invoice invoice = new Invoice();
+            invoice.DueDate = request.DueDate;
+            invoice.ClientID = request.ClientID;
             invoice.Details = (from d in request.Details
                                select
                                new Detail
                                {
                                    Quantity = d.Quantity,
-                                   ClientID = d.ClientID,
+                                   Description = d.Description,
                                    ProductID = d.ProductID
                                }).ToList();
 
@@ -94,9 +102,9 @@ namespace APIInvoice.Controllers
 
         // No hay método para actualizar ya que los campos de Invoice son autogenerados
 
-        public bool DeleteInvoice(int id)
+        public async Task<bool> DeleteInvoice(int id)
         {
-            bool status = invoiceService.Delete(id);
+            bool status = await invoiceService.Delete(id);
             return status;
         }
     }

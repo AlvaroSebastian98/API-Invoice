@@ -10,15 +10,12 @@ namespace Domain
     public class Detail
     {
         public int DetailID { get; set; }
+        public string Description { get; set; }
         public int Quantity { get; set; }
-        public int Prize { get; set; }
-        
+        public int Prize { get; set; }               
 
         //public User Seller { get; set; }
-        //public int SellerID { get; set; }
-        public User Client { get; set; }
-        [ForeignKey("Client")]
-        public int ClientID { get; set; }
+        //public int SellerID { get; set; }        
 
         public Product Product { get; set; }
         public int ProductID { get; set; }
@@ -26,5 +23,7 @@ namespace Domain
         //1 Detail have an invoice
         public Invoice Invoice { get; set; }
         public int InvoiceID { get; set; }
+
+        public bool State { get; set; }
     }
 }

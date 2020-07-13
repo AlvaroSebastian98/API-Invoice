@@ -29,6 +29,7 @@ namespace Service
 
             using (var context = new InvoiceContext())
             {
+                //Detail = context.Details.Where((detail) => detail.DetailID == ID && detail.State == true).First();
                 Detail = context.Details.Find(ID);
             }
 
@@ -46,6 +47,7 @@ namespace Service
                     var Product = context.Products.Find(Detail.ProductID);
 
                     Detail.Prize = Product.Prize;
+                    Detail.State = true;
                                  
                     context.Details.Add(Detail);
                     await context.SaveChangesAsync();
@@ -74,6 +76,7 @@ namespace Service
                         var Product = context.Products.Find(Detail.ProductID);
 
                         Detail.Prize = Product.Prize;
+                        Detail.State = true;
 
                         context.Details.Add(Detail);
                     }
@@ -100,7 +103,7 @@ namespace Service
                     var DetailNew = context.Details.Find(ID);
                     DetailNew.Quantity = Detail.Quantity == 0 ? DetailNew.Quantity : Detail.Quantity;
                     DetailNew.Prize = Detail.Prize == 0 ? DetailNew.Prize : Detail.Prize;
-                    DetailNew.ClientID = Detail.ClientID == 0 ? DetailNew.ClientID : Detail.ClientID;
+                    DetailNew.Description = Detail.Description ?? DetailNew.Description;
                     DetailNew.ProductID = Detail.ProductID == 0 ? DetailNew.ProductID : Detail.ProductID;
                     DetailNew.InvoiceID = Detail.InvoiceID == 0 ? DetailNew.InvoiceID : Detail.InvoiceID;
 
@@ -115,7 +118,52 @@ namespace Service
             return status;
         }
 
-        public bool Delete(int ID)
+        public async Task<bool> DeleteWithInvoice(List<Detail> Details)
+        {
+            bool status;
+            try
+            {
+                using (var context = new InvoiceContext())
+                {
+                    foreach (var detail in Details)
+                    {
+                        var Detail = context.Details.Find(detail.DetailID);
+                        Detail.State = false;
+                    }                    
+                    await context.SaveChangesAsync();
+                }
+                status = true;
+            }
+            catch (Exception)
+            {
+                status = false;
+            }
+
+            return status;
+        }
+
+        public async Task<bool> Delete(int ID)
+        {
+            bool status;
+            try
+            {
+                using (var context = new InvoiceContext())
+                {
+                    var Detail = context.Details.Find(ID);
+                    Detail.State = false;
+                    await context.SaveChangesAsync();
+                }
+                status = true;
+            }
+            catch (Exception)
+            {
+                status = false;
+            }
+
+            return status;
+        }
+
+        public bool Remove(int ID)
         {
             bool status;
             try
