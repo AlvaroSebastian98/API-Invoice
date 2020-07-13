@@ -55,7 +55,7 @@
     <div class="card-header py-3">
         <div class="row">
             <h6 class="col-md-10 m-0 font-weight-bold text-primary">Lista de Facturas</h6>
-            <button type="button" class="col-md-2 btn btn-primary" onclick="lanzar()">
+            <button type="button" class="col-md-2 btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                 Nueva Factura
             </button>
         </div>
@@ -65,13 +65,13 @@
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th width="8%">Nro Factura</th>
-                        <th width="8%">Fecha de Venta</th>
-                        <th width="20%">Vendedor</th>
-                        <th width="20%">Cliente</th>
-                        <th width="5%">Subtotal</th>
-                        <th width="5%">Igv</th>
-                        <th width="5%">Total</th>
+                        <th width="8%">InvoiceID</th>
+                        <th width="8%">Date</th>
+                        <th width="20%">InvoiceNumber</th>
+                        <th width="20%">Detalle</th>
+                        <th width="5%">Quantity</th>
+                        <th width="5%">Prize</th>
+                        <th width="5%">Product</th>
                         <th width="5%">Pagado</th>
                         <th width="20%">Acciones</th>
                     </tr>
@@ -88,7 +88,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Registrar Cliente</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Registrar Factura</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -97,8 +97,8 @@
                 <div class="modal-body">
                     <input type="hidden" value="" name="salesInvoceID" id="salesInvoceID" />
                     <div class="form-group">
-                        <label for="customer">Cliente</label>
-                        <select class="form-control" id="customer" name="customer">
+                        <label for="cliente">Cliente</label>
+                        <select class="form-control" id="cliente" name="cliente">
                             <option></option>
                         </select>
                     </div>
@@ -111,8 +111,8 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <label for="quantity">Cantidad</label>
-                                <input type="text" class="form-control" name="quantity" id="quantity" placeholder="">
+                                <label for="Quantity">Cantidad</label>
+                                <input type="text" class="form-control" name="Quantity" id="Quantity" placeholder="">
                             </div>
                         </div>
                     </div>
@@ -120,37 +120,17 @@
                         <button id="btnAgregar" type="button" class="btn btn-primary btn-block">Agregar producto</button>
                     </div>
                     <div class="form-group">
-                        <label for="customer">Lista de productos</label>
+                        <label for="cliente">Lista de productos</label>
                         <div class="col-md-12">
                             <table id="tblProducts" class="table table-bordered">
                                 <thead>
-                                <th>Producto</th>
-                                <th>Precio</th>
-                                <th width="10%">Cantidad</th>
+                                    <th>ProductId</th>
+                                    <th>ProductName</th>
+                                    <th width="10%">Cantidad</th>
                                 </thead>
                                 <tbody>
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-8 text-right">
-                                <label for="subTotal">SubTotal</label>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" readonly name="subTotal" id="subTotal" placeholder="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-md-8 text-right">
-                                <label for="discount">IGV %</label>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" readonly name="discount" value="18" id="discount" placeholder="">
-                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -187,13 +167,13 @@
 
                 var found = products.find(element => element.ProductID == $("#product").val());
 
-                var item = { "productID": $("#product").val(), "quantity": $("#quantity").val(), "price": found.Price };
+                var item = { "productID": $("#product").val(), "Quantity": $("#Quantity").val(), "price": found.Price };
 
-                $('#tblProducts').append('<tr><td>' + found.Name + '</td><td> $' + found.Price + '</td><td>' + item.quantity + '</td></tr>');
+                $('#tblProducts').append('<tr><td>' + found.Name + '</td><td> $' + found.Price + '</td><td>' + item.Quantity + '</td></tr>');
 
                 listItems.push(item);
 
-                listItems.forEach(element => sub_total = sub_total + (element.price * element.quantity));
+                listItems.forEach(element => sub_total = sub_total + (element.price * element.Quantity));
 
                 $("#subTotal").val(sub_total);
 
@@ -202,10 +182,10 @@
 
             });
 
-            lanzar = function () {
-                limpiarForm();
-                $("#exampleModal").modal('toggle');
-            }
+            //lanzar = function () {
+            //    limpiarForm();
+            //    $("#exampleModal").modal('toggle');
+            //}
 
             var limpiarForm = function () {
                 $("#exampleModalLabel").text("Registar Producto");
@@ -214,6 +194,24 @@
                 $("#stock").val("");
                 $("#price").val("");
                 $("#remarks").val("");
+            }
+
+            var llenarClientes = function () {
+                $.ajax({
+                    type: "GET",
+                    url: 'https://localhost:44330/api/Client/Get',
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data)
+                        $.each(data, function (key, registro) {
+                            $("#cliente").append('<option value=' + registro.ClientID + '>' + registro.Username + '</option>');
+                        });
+                        $('#cliente')
+                    },
+                    error: function (data) {
+                        alert('error');
+                    }
+                });
             }
 
             var llenarProductos = function () {
@@ -225,15 +223,94 @@
                         products = data;
                         $.each(data, function (key, registro) {
                             $("#product").append('<option value=' + registro.ProductID + '>' + registro.ProductName + ' $' + registro.Prize + '</option>');
+                            console.log(registro)
                         });
-                        $('#product').combobox()
+                        $('#product')
                     },
                     error: function (data) {
                         alert('error');
                     }
                 });
             }
+
+            var cargarLista = function () {
+                $.ajax({
+                    url: "https://localhost:44330/api/Invoice/GetAllInvoices",
+                    success: function (data) {
+                        //console.log(data);
+                        //for (var i = 0; i < data.length; i++) {
+                        //    data[i].CreateAt1 = moment(data[i].CreateAt).format("MM/DD/YYYY");
+                        //}
+                        var table = $('#dataTable').DataTable({
+                            destroy: true,
+                            "language": {
+                                "decimal": ",",
+                                "thousands": ".",
+                                "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                                "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                                "infoPostFix": "",
+                                "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                                "loadingRecords": "Cargando...",
+                                "lengthMenu": "Mostrar _MENU_ registros",
+                                "paginate": {
+                                    "first": "Primero",
+                                    "last": "Último",
+                                    "next": "Siguiente",
+                                    "previous": "Anterior"
+                                },
+                                "processing": "Procesando...",
+                                "search": "Buscar:",
+                                "searchPlaceholder": "Término de búsqueda",
+                                "zeroRecords": "No se encontraron resultados",
+                                "emptyTable": "Ningún dato disponible en esta tabla",
+                                "aria": {
+                                    "sortAscending": ": Activar para ordenar la columna de manera ascendente",
+                                    "sortDescending": ": Activar para ordenar la columna de manera descendente"
+                                },
+                                "buttons": {
+                                    "create": "Nuevo",
+                                    "edit": "Cambiar",
+                                    "remove": "Borrar",
+                                    "copy": "Copiar",
+                                    "csv": "fichero CSV",
+                                    "excel": "tabla Excel",
+                                    "pdf": "documento PDF",
+                                    "print": "Imprimir",
+                                    "colvis": "Visibilidad columnas",
+                                    "collection": "Colección",
+                                    "upload": "Seleccione fichero...."
+                                },
+                                "select": {
+                                    "rows": {
+                                        _: '%d filas seleccionadas',
+                                        0: 'clic fila para seleccionar',
+                                        1: 'una fila seleccionada'
+                                    }
+                                }
+                            },
+                            data: data,
+                            columns: [
+                                { "data": "InvoiceID" },
+                                { "data": "Date" },
+                                { "data": "DueDate" },
+                                { "data": "InvoiceNumber" },
+                                { "data": "ClientID" },
+                                { "data": "Details" },
+                                {
+                                    "defaultContent": "<button type='button' class='btn btn-success btn-circle editar mr-2'><i class='fas fa-pencil-alt'></i></button>" +
+                                        "<button class='btn btn-danger btn-circle eliminar mr-2'><i class='fas fa-trash'></i></button>"
+                                }
+                            ],
+                        });
+                        //obtener_data_editar("#dataTable tbody", table);
+                        //obtener_data_eliminar("#dataTable tbody", table);
+                    }
+                });
+            }
+
+            llenarClientes();
             llenarProductos();
+            cargarLista();
         })
     </script>
 }
