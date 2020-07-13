@@ -84,7 +84,7 @@
                 $(tbody).on("click", "button.editar", function () {
                     var data = table.row($(this).parents("tr")).data();
                     console.log(data);
-                    $("#exampleModalLabel").text("Actualizar Cliente");
+                    $("#exampleModalLabel").text("Actualizar Producto");
                     $("#ProductID").val(data.ProductID);
                     $("#ProductName").val(data.ProductName);
                     $("#Prize").val(data.Prize);
@@ -103,17 +103,7 @@
                 $(tbody).on("click", "button.eliminar", function () {
                     var data = table.row($(this).parents("tr")).data();
                     console.log(data)
-                    //var resp = confirm("¿Seguro de eliminar?");
-                    //if (resp) {
-                    //    $.ajax({
-                    //        url: `https://localhost:44330/api/Product/Delete/${data.ProductID}`,
-                    //        type: 'DELETE',
-                    //        //data: { id: data.ClientID },
-                    //        success: function (result) {
-                    //            cargarLista();
-                    //        }
-                    //    });
-                    //}
+                 
                     Swal.fire({
                         title: '¿Estas seguro de eliminar este registro?',
                         text: "Una vez eliminado no podras recuperalo!",
@@ -138,7 +128,10 @@
                 });
             }
 
-            var cargarLista = function () {
+
+           
+
+                var cargarLista = function () {
                 $.ajax({
                     url: "https://localhost:44330/api/Product/Get",
                     success: function (data) {
@@ -201,15 +194,19 @@
                                 }
                             ],
                         });
-                        obtener_data_editar("#dataTable tbody", table);
+                  
                         obtener_data_eliminar("#dataTable tbody", table);
+                        obtener_data_editar("#dataTable tbody", table);
+              
                     }
                 });
             }
 
 
 
-            $("#form1").on("submit", function (event) {
+
+
+            $("#form1").on("submit", function (event) { 
                 event.preventDefault();
                 $.ajax({
                     url: 'https://localhost:44330/api/Product/Post',
@@ -219,6 +216,7 @@
                         limpiarForm();
                         setTimeout(function () {
                             cargarLista();
+                           cargarListaUp();
                             $('#exampleModal').modal('hide');
                         }, 1000)
 
@@ -226,8 +224,9 @@
                     }
                 });
             });
-
+  
             cargarLista();
+           
         });</script>
 }
 
